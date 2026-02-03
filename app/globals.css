@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-deep: #0a1628;
+  --color-navy-mid: #122240;
+  --color-teal-bright: #00c9a7;
+  --color-teal-muted: #0d9b8a;
+  --color-silver-light: #e8ecf1;
+  --color-silver-dark: #94a3b8;
+  --color-white: #f8fafc;
+  --color-charcoal: #1e293b;
+
+  --font-sans: var(--font-ibm-plex-sans), system-ui, sans-serif;
+  --font-display: var(--font-plus-jakarta-sans), system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular;
+
+  --shadow-tealGlow: 0 0 24px rgba(0, 201, 167, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-navy-deep);
+  color: var(--color-silver-light);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+::selection {
+  background: rgba(0, 201, 167, 0.3);
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(232, 236, 241, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(232, 236, 241, 0.05) 1px,
+      transparent 1px
+    );
+  background-size: 48px 48px;
+}
+
+.grid-texture-fine {
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(232, 236, 241, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(232, 236, 241, 0.035) 1px,
+      transparent 1px
+    );
+  background-size: 32px 32px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
