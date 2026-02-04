@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Send, Mail, MapPin, Building2 } from "lucide-react";
 
 const initialForm = {
   name: "",
@@ -46,9 +47,14 @@ export default function Contact() {
     }
   };
 
+  const inputClasses =
+    "w-full rounded-lg border border-glass-border bg-obsidian-mid px-4 py-3 text-sm text-slate-300 placeholder:text-slate-600 focus:border-aviation-cobalt focus:outline-none focus:ring-1 focus:ring-aviation-cobalt/50 transition-colors";
+
   return (
-    <section id="contact" className="relative bg-navy-deep py-24">
-      <div className="pointer-events-none absolute inset-0 grid-texture opacity-40" />
+    <section id="contact" className="relative bg-obsidian-light py-24">
+      {/* Background texture */}
+      <div className="pointer-events-none absolute inset-0 grid-texture opacity-30" />
+
       <div className="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 md:px-10">
         <motion.div
           className="flex flex-col gap-4"
@@ -57,7 +63,7 @@ export default function Contact() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="font-mono text-xs uppercase tracking-[0.4em] text-teal-bright">
+          <span className="font-mono text-xs uppercase tracking-[0.4em] text-bio-mint">
             Let&apos;s Talk
           </span>
           <h2 className="text-balance font-display text-3xl font-bold text-white md:text-4xl">
@@ -75,7 +81,7 @@ export default function Contact() {
             transition={{ duration: 0.6 }}
           >
             <div className="grid gap-6 md:grid-cols-2">
-              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
                 Name
                 <input
                   type="text"
@@ -83,10 +89,11 @@ export default function Contact() {
                   value={formState.name}
                   onChange={handleChange}
                   required
-                  className="w-full border border-[rgba(232,236,241,0.18)] bg-navy-mid px-4 py-3 text-sm text-silver-light focus:border-teal-bright focus:outline-none"
+                  placeholder="Your name"
+                  className={inputClasses}
                 />
               </label>
-              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
                 Email
                 <input
                   type="email"
@@ -94,29 +101,31 @@ export default function Contact() {
                   value={formState.email}
                   onChange={handleChange}
                   required
-                  className="w-full border border-[rgba(232,236,241,0.18)] bg-navy-mid px-4 py-3 text-sm text-silver-light focus:border-teal-bright focus:outline-none"
+                  placeholder="you@company.com"
+                  className={inputClasses}
                 />
               </label>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
                 Company (Optional)
                 <input
                   type="text"
                   name="company"
                   value={formState.company}
                   onChange={handleChange}
-                  className="w-full border border-[rgba(232,236,241,0.18)] bg-navy-mid px-4 py-3 text-sm text-silver-light focus:border-teal-bright focus:outline-none"
+                  placeholder="Your company"
+                  className={inputClasses}
                 />
               </label>
-              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+              <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
                 Project Type
                 <select
                   name="projectType"
                   value={formState.projectType}
                   onChange={handleChange}
-                  className="w-full border border-[rgba(232,236,241,0.18)] bg-navy-mid px-4 py-3 text-sm text-silver-light focus:border-teal-bright focus:outline-none"
+                  className={inputClasses}
                 >
                   <option>Cloud Infrastructure</option>
                   <option>Compliance &amp; Security</option>
@@ -128,7 +137,7 @@ export default function Contact() {
               </label>
             </div>
 
-            <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+            <label className="flex flex-col gap-2 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
               Message
               <textarea
                 name="message"
@@ -136,58 +145,77 @@ export default function Contact() {
                 onChange={handleChange}
                 required
                 rows={6}
-                className="w-full border border-[rgba(232,236,241,0.18)] bg-navy-mid px-4 py-3 text-sm text-silver-light focus:border-teal-bright focus:outline-none"
+                placeholder="Tell us about your project..."
+                className={inputClasses + " resize-none"}
               />
             </label>
 
             <button
               type="submit"
-              className="w-fit bg-teal-bright px-8 py-4 font-mono text-xs uppercase tracking-[0.3em] text-navy-deep transition-all duration-300 hover:shadow-tealGlow"
+              className="group inline-flex w-fit items-center gap-3 rounded-lg border border-bio-mint/50 bg-bio-mint/10 px-8 py-4 font-mono text-xs uppercase tracking-[0.3em] text-bio-mint transition-all duration-300 hover:border-bio-mint hover:bg-bio-mint/20 hover:shadow-glow-mint disabled:opacity-50"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "Sending..." : "Send Message"}
+              <span>{status === "sending" ? "Sending..." : "Send Message"}</span>
+              <Send className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
 
             {status === "success" && (
-              <p className="text-sm text-teal-bright">
+              <p className="text-sm text-bio-mint">
                 Message received. We will respond shortly.
               </p>
             )}
             {status === "error" && (
-              <p className="text-sm text-red-300">
+              <p className="text-sm text-rose">
                 Something went wrong. Please try again.
               </p>
             )}
           </motion.form>
 
           <motion.div
-            className="flex flex-col gap-4 border border-[rgba(232,236,241,0.18)] bg-navy-mid px-6 py-8"
+            className="flex flex-col gap-6 rounded-xl border border-glass-border bg-obsidian-mid p-8"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, delay: 0.05 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
-                Email
-              </p>
-              <p className="text-sm text-silver-light">
-                contact@stratosstrat.com
-              </p>
+            <div className="flex items-start gap-4">
+              <div className="rounded-lg border border-glass-border bg-aviation-cobalt/10 p-2">
+                <Mail className="h-4 w-4 text-aviation-cobalt" />
+              </div>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
+                  Email
+                </p>
+                <p className="mt-1 text-sm text-slate-300">
+                  contact@stratosstrat.com
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
-                Location
-              </p>
-              <p className="text-sm text-silver-light">Doral, FL</p>
+
+            <div className="flex items-start gap-4">
+              <div className="rounded-lg border border-glass-border bg-dna-purple/10 p-2">
+                <MapPin className="h-4 w-4 text-dna-purple" />
+              </div>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
+                  Location
+                </p>
+                <p className="mt-1 text-sm text-slate-300">Doral, FL</p>
+              </div>
             </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
-                Entity
-              </p>
-              <p className="text-sm text-silver-light">
-                Stratos Strategies LLC
-              </p>
+
+            <div className="flex items-start gap-4">
+              <div className="rounded-lg border border-glass-border bg-bio-mint/10 p-2">
+                <Building2 className="h-4 w-4 text-bio-mint" />
+              </div>
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
+                  Entity
+                </p>
+                <p className="mt-1 text-sm text-slate-300">
+                  Stratos Strategies LLC
+                </p>
+              </div>
             </div>
           </motion.div>
         </div>

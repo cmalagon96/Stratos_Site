@@ -6,7 +6,7 @@ import { stats } from "@/lib/constants";
 
 export default function About() {
   return (
-    <section id="about" className="bg-navy-mid py-24">
+    <section id="about" className="bg-obsidian-light py-24">
       <div className="mx-auto flex max-w-6xl flex-col gap-12 px-6 md:px-10">
         <motion.div
           className="flex flex-col gap-6"
@@ -15,13 +15,13 @@ export default function About() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
         >
-          <span className="font-mono text-xs uppercase tracking-[0.4em] text-teal-bright">
+          <span className="font-mono text-xs uppercase tracking-[0.4em] text-aviation-cobalt">
             Our Approach
           </span>
           <h2 className="text-balance font-display text-3xl font-bold text-white md:text-4xl">
             We do not advise from a distance. We build, implement, and operate.
           </h2>
-          <div className="flex flex-col gap-4 text-base text-silver-light">
+          <div className="flex flex-col gap-4 text-base text-slate-400">
             <p>
               Stratos Strategies exists at the intersection of infrastructure
               engineering, software development, and operational execution. We
@@ -44,24 +44,27 @@ export default function About() {
           </div>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.id}
-              className="flex flex-col gap-2 border border-[rgba(232,236,241,0.18)] bg-[#0f1e36] px-6 py-6"
+              className="group relative flex flex-col gap-2 overflow-hidden rounded-xl border border-glass-border bg-obsidian-mid px-6 py-6"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: index * 0.05 }}
             >
+              {/* Subtle gradient on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-aviation-cobalt/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
               <AnimatedCounter
                 value={stat.value}
                 prefix={stat.prefix}
                 suffix={stat.suffix}
                 hideNumber={stat.hideNumber}
-                className="font-display text-3xl font-bold text-white"
+                className="relative z-10 font-display text-3xl font-bold text-white"
               />
-              <span className="font-mono text-xs uppercase tracking-[0.3em] text-silver-dark">
+              <span className="relative z-10 font-mono text-xs uppercase tracking-[0.3em] text-slate-500">
                 {stat.label}
               </span>
             </motion.div>

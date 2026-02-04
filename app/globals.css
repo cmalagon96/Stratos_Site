@@ -1,20 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-deep: #0a1628;
-  --color-navy-mid: #122240;
-  --color-teal-bright: #00c9a7;
-  --color-teal-muted: #0d9b8a;
-  --color-silver-light: #e8ecf1;
-  --color-silver-dark: #94a3b8;
-  --color-white: #f8fafc;
-  --color-charcoal: #1e293b;
+  /* 2026 Sovereign Tech Palette - OKLCH for wide gamut displays */
+  --color-obsidian: oklch(15% 0.02 250);
+  --color-obsidian-light: oklch(20% 0.02 250);
+  --color-obsidian-mid: oklch(18% 0.02 250);
+  --color-aviation-cobalt: oklch(55% 0.20 250);
+  --color-bio-mint: oklch(85% 0.15 160);
+  --color-dna-purple: oklch(60% 0.25 300);
+  --color-slate-300: oklch(75% 0.02 250);
+  --color-slate-400: oklch(65% 0.02 250);
+  --color-slate-500: oklch(55% 0.02 250);
+  --color-slate-600: oklch(45% 0.02 250);
+  --color-white: oklch(98% 0 0);
+  --color-rose: oklch(60% 0.20 15);
+  --color-emerald: oklch(70% 0.18 160);
 
-  --font-sans: var(--font-ibm-plex-sans), system-ui, sans-serif;
-  --font-display: var(--font-plus-jakarta-sans), system-ui, sans-serif;
-  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular;
+  /* Glassmorphism tokens */
+  --glass-border: oklch(40% 0.02 250 / 0.3);
+  --glass-border-light: oklch(50% 0.02 250 / 0.2);
+  --glass-bg: oklch(18% 0.02 250 / 0.6);
+  --glass-bg-solid: oklch(18% 0.02 250);
 
-  --shadow-tealGlow: 0 0 24px rgba(0, 201, 167, 0.35);
+  /* Legacy color aliases for gradual migration */
+  --color-navy-deep: oklch(15% 0.02 250);
+  --color-navy-mid: oklch(20% 0.02 250);
+  --color-teal-bright: oklch(75% 0.15 175);
+  --color-teal-muted: oklch(60% 0.12 175);
+  --color-silver-light: oklch(90% 0.01 250);
+  --color-silver-dark: oklch(65% 0.02 250);
+  --color-charcoal: oklch(30% 0.02 250);
+
+  /* Typography - Geist variable font */
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
+
+  /* Shadows */
+  --shadow-glow-cobalt: 0 0 30px oklch(55% 0.20 250 / 0.4);
+  --shadow-glow-mint: 0 0 30px oklch(85% 0.15 160 / 0.3);
+  --shadow-glow-purple: 0 0 30px oklch(60% 0.25 300 / 0.3);
 }
 
 * {
@@ -26,26 +51,40 @@ html {
 }
 
 body {
-  background: var(--color-navy-deep);
-  color: var(--color-silver-light);
+  background: var(--color-obsidian);
+  color: var(--color-slate-300);
   font-family: var(--font-sans);
   line-height: 1.6;
 }
 
 ::selection {
-  background: rgba(0, 201, 167, 0.3);
+  background: oklch(55% 0.20 250 / 0.3);
 }
 
+/* Glassmorphism utility classes */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-solid {
+  background: var(--glass-bg-solid);
+  border: 1px solid var(--glass-border);
+}
+
+/* Grid texture overlays */
 .grid-texture {
   background-image:
     linear-gradient(
       to right,
-      rgba(232, 236, 241, 0.05) 1px,
+      oklch(65% 0.02 250 / 0.05) 1px,
       transparent 1px
     ),
     linear-gradient(
       to bottom,
-      rgba(232, 236, 241, 0.05) 1px,
+      oklch(65% 0.02 250 / 0.05) 1px,
       transparent 1px
     );
   background-size: 48px 48px;
@@ -55,17 +94,57 @@ body {
   background-image:
     linear-gradient(
       to right,
-      rgba(232, 236, 241, 0.035) 1px,
+      oklch(65% 0.02 250 / 0.035) 1px,
       transparent 1px
     ),
     linear-gradient(
       to bottom,
-      rgba(232, 236, 241, 0.035) 1px,
+      oklch(65% 0.02 250 / 0.035) 1px,
       transparent 1px
     );
   background-size: 32px 32px;
 }
 
+/* Noise texture for depth */
+.noise-texture {
+  position: relative;
+}
+
+.noise-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Text utilities */
 .text-balance {
   text-wrap: balance;
+}
+
+/* Kinetic typography support */
+.kinetic-text {
+  font-variation-settings: "wght" var(--font-weight, 400);
+  transition: font-variation-settings 0.1s ease-out;
+}
+
+/* Container query support */
+@container (min-width: 320px) {
+  .cq-sm\:p-6 {
+    padding: 1.5rem;
+  }
+}
+
+@container (min-width: 480px) {
+  .cq-md\:p-8 {
+    padding: 2rem;
+  }
+}
+
+@container (min-width: 640px) {
+  .cq-lg\:p-10 {
+    padding: 2.5rem;
+  }
 }

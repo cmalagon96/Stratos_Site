@@ -1,49 +1,25 @@
 import type { Metadata } from "next";
-import {
-  IBM_Plex_Mono,
-  IBM_Plex_Sans,
-  Plus_Jakarta_Sans
-} from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-plus-jakarta-sans",
-  display: "swap"
-});
-
-const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-ibm-plex-sans",
-  display: "swap"
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-ibm-plex-mono",
-  display: "swap"
-});
-
 export const metadata: Metadata = {
-  title: "Stratos Strategies LLC — Infrastructure. Intelligence. Execution.",
+  title: "Stratos Strategies LLC — Infrastructure for the Frontiers of Life and Flight",
   description:
-    "Cloud infrastructure, compliance engineering, full-stack development, and automation consulting.",
+    "Aviation infrastructure systems, genomic data pipelines, and enterprise cloud architecture. Where precision meets execution.",
   metadataBase: new URL("https://stratosstrat.com"),
   openGraph: {
-    title: "Stratos Strategies LLC — Infrastructure. Intelligence. Execution.",
+    title: "Stratos Strategies LLC — Infrastructure for the Frontiers of Life and Flight",
     description:
-      "Cloud infrastructure, compliance engineering, full-stack development, and automation consulting.",
+      "Aviation infrastructure systems, genomic data pipelines, and enterprise cloud architecture.",
     type: "website",
     url: "https://stratosstrat.com"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Stratos Strategies LLC — Infrastructure. Intelligence. Execution.",
+    title: "Stratos Strategies LLC — Infrastructure for the Frontiers of Life and Flight",
     description:
-      "Cloud infrastructure, compliance engineering, full-stack development, and automation consulting."
+      "Aviation infrastructure systems, genomic data pipelines, and enterprise cloud architecture."
   }
 };
 
@@ -55,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${plusJakartaSans.variable} ${ibmPlexSans.variable} ${ibmPlexMono.variable} bg-navy-deep text-silver-light antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} bg-obsidian text-slate-300 antialiased`}
       >
         {children}
       </body>

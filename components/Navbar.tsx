@@ -21,7 +21,7 @@ export default function Navbar() {
   }, []);
 
   const navClasses = isScrolled
-    ? "bg-[#0a1628]/90 backdrop-blur-md border-b border-[rgba(232,236,241,0.08)]"
+    ? "bg-obsidian/80 backdrop-blur-xl border-b border-glass-border"
     : "bg-transparent";
 
   return (
@@ -29,10 +29,10 @@ export default function Navbar() {
       <nav className={`transition-all duration-300 ${navClasses}`}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 md:px-10">
           <a href="#top" className="flex items-baseline gap-2">
-            <span className="font-display text-lg font-extrabold tracking-[0.2em] text-white">
+            <span className="font-display text-lg font-bold tracking-[0.2em] text-white">
               STRATOS
             </span>
-            <span className="font-display text-xs font-normal tracking-[0.35em] text-silver-dark">
+            <span className="font-display text-xs font-normal tracking-[0.35em] text-slate-500">
               STRATEGIES
             </span>
           </a>
@@ -42,10 +42,10 @@ export default function Navbar() {
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className="group relative font-mono text-xs uppercase tracking-[0.3em] text-silver-light transition-colors hover:text-white"
+                className="group relative font-mono text-xs uppercase tracking-[0.3em] text-slate-400 transition-colors hover:text-white"
               >
                 {link.label}
-                <span className="absolute -bottom-2 left-0 h-[1px] w-full origin-left scale-x-0 bg-teal-bright transition-transform duration-300 group-hover:scale-x-100" />
+                <span className="absolute -bottom-2 left-0 h-[1px] w-full origin-left scale-x-0 bg-aviation-cobalt transition-transform duration-300 group-hover:scale-x-100" />
               </a>
             ))}
           </div>
@@ -57,19 +57,19 @@ export default function Navbar() {
             aria-label="Toggle navigation"
             aria-expanded={menuOpen}
           >
-            <span className="relative block h-[2px] w-6 bg-silver-light">
+            <span className="relative block h-[2px] w-6 bg-slate-400">
               <span
-                className={`absolute left-0 top-[-8px] h-[2px] w-6 bg-silver-light transition-transform duration-300 ${
+                className={`absolute left-0 top-[-8px] h-[2px] w-6 bg-slate-400 transition-transform duration-300 ${
                   menuOpen ? "translate-y-[8px] rotate-45" : ""
                 }`}
               />
               <span
-                className={`absolute left-0 top-[8px] h-[2px] w-6 bg-silver-light transition-transform duration-300 ${
+                className={`absolute left-0 top-[8px] h-[2px] w-6 bg-slate-400 transition-transform duration-300 ${
                   menuOpen ? "translate-y-[-8px] -rotate-45" : ""
                 }`}
               />
               <span
-                className={`absolute left-0 top-0 h-[2px] w-6 bg-silver-light transition-opacity duration-200 ${
+                className={`absolute left-0 top-0 h-[2px] w-6 bg-slate-400 transition-opacity duration-200 ${
                   menuOpen ? "opacity-0" : "opacity-100"
                 }`}
               />
@@ -79,7 +79,7 @@ export default function Navbar() {
       </nav>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0a1628]/95 backdrop-blur-sm md:hidden">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-obsidian/95 backdrop-blur-xl md:hidden">
           <div className="flex flex-col items-center gap-8">
             {navLinks.map((link) => (
               <a
