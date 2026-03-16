@@ -24,9 +24,11 @@ export default $config({
       //   redirects: ["www.stratosstrat.com"]
       // },
 
-      // Environment variables (if needed)
+      // Environment variables
       environment: {
-        NODE_ENV: "production"
+        NODE_ENV: "production",
+        CONTACT_EMAIL_FROM: process.env.CONTACT_EMAIL_FROM ?? "",
+        CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO ?? "",
       },
 
       // Build settings

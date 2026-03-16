@@ -1,67 +1,107 @@
 @import "tailwindcss";
 
 @theme {
-  /* 2026 Sovereign Tech Palette - OKLCH for wide gamut displays */
-  --color-obsidian: oklch(15% 0.02 250);
-  --color-obsidian-light: oklch(20% 0.02 250);
-  --color-obsidian-mid: oklch(18% 0.02 250);
-  --color-aviation-cobalt: oklch(55% 0.20 250);
-  --color-bio-mint: oklch(85% 0.15 160);
-  --color-dna-purple: oklch(60% 0.25 300);
-  --color-slate-300: oklch(75% 0.02 250);
-  --color-slate-400: oklch(65% 0.02 250);
-  --color-slate-500: oklch(55% 0.02 250);
-  --color-slate-600: oklch(45% 0.02 250);
-  --color-white: oklch(98% 0 0);
-  --color-rose: oklch(60% 0.20 15);
-  --color-emerald: oklch(70% 0.18 160);
+  /* ─────────────────────────────────────────────────────────────────────
+     Stratos Strategies — Neural Emerald palette
+     Logo: mint/emerald green (#3ECF8E region) on pure black
+     ───────────────────────────────────────────────────────────────────── */
 
-  /* Glassmorphism tokens */
-  --glass-border: oklch(40% 0.02 250 / 0.3);
-  --glass-border-light: oklch(50% 0.02 250 / 0.2);
-  --glass-bg: oklch(18% 0.02 250 / 0.6);
-  --glass-bg-solid: oklch(18% 0.02 250);
+  /* Core blacks */
+  --color-void:        oklch(4%  0.005 160);
+  --color-abyss:       oklch(7%  0.008 160);
+  --color-depth:       oklch(10% 0.010 160);
+  --color-surface:     oklch(13% 0.010 160);
+  --color-surface-mid: oklch(16% 0.010 160);
+  --color-rim:         oklch(22% 0.015 160);
 
-  /* Legacy color aliases for gradual migration */
-  --color-navy-deep: oklch(15% 0.02 250);
-  --color-navy-mid: oklch(20% 0.02 250);
-  --color-teal-bright: oklch(75% 0.15 175);
-  --color-teal-muted: oklch(60% 0.12 175);
-  --color-silver-light: oklch(90% 0.01 250);
-  --color-silver-dark: oklch(65% 0.02 250);
-  --color-charcoal: oklch(30% 0.02 250);
+  /* Primary accent — logo mint/emerald */
+  --color-emerald:        oklch(72% 0.19 160);
+  --color-emerald-bright: oklch(80% 0.18 160);
+  --color-emerald-dim:    oklch(56% 0.16 160);
+  --color-emerald-ghost:  oklch(72% 0.19 160 / 0.08);
+  --color-emerald-glow:   oklch(72% 0.19 160 / 0.20);
 
-  /* Typography - Geist variable font */
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-display: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular;
+  /* Text scale */
+  --color-white:       oklch(98% 0    0);
+  --color-text-hi:     oklch(92% 0.01 160);
+  --color-text-mid:    oklch(62% 0.01 160);
+  --color-text-lo:     oklch(40% 0.01 160);
+  --color-text-ultra:  oklch(26% 0.01 160);
+
+  /* Error */
+  --color-error: oklch(62% 0.22 25);
+
+  /* Glass tokens */
+  --glass-border:       oklch(72% 0.19 160 / 0.12);
+  --glass-border-light: oklch(72% 0.19 160 / 0.07);
+  --glass-bg:           oklch(10% 0.010 160 / 0.70);
+  --glass-bg-solid:     oklch(10% 0.010 160);
+
+  /* Typography */
+  --font-sans:    var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter), system-ui, sans-serif;
+  /* P2-08: System monospace stack only — no web font fetches for a utility font */
+  --font-mono:    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Shadows */
-  --shadow-glow-cobalt: 0 0 30px oklch(55% 0.20 250 / 0.4);
-  --shadow-glow-mint: 0 0 30px oklch(85% 0.15 160 / 0.3);
-  --shadow-glow-purple: 0 0 30px oklch(60% 0.25 300 / 0.3);
+  --shadow-glow-emerald:    0 0 40px oklch(72% 0.19 160 / 0.35);
+  --shadow-glow-emerald-sm: 0 0 20px oklch(72% 0.19 160 / 0.25);
+  --shadow-glow-emerald-xs: 0 0 10px oklch(72% 0.19 160 / 0.18);
+
+  /* Legacy aliases */
+  --color-obsidian:         oklch(7%  0.008 160);
+  --color-obsidian-light:   oklch(10% 0.010 160);
+  --color-obsidian-mid:     oklch(13% 0.010 160);
+  --color-navy-deep:        oklch(7%  0.008 160);
+  --color-navy-mid:         oklch(10% 0.010 160);
+  --color-aviation-cobalt:  oklch(72% 0.19 160);
+  --color-bio-mint:         oklch(72% 0.19 160);
+  --color-dna-purple:       oklch(72% 0.19 160);
+  --color-teal-bright:      oklch(72% 0.19 160);
+  --color-teal-muted:       oklch(56% 0.16 160);
+  --color-rose:             oklch(62% 0.22 25);
+  --color-emerald-legacy:   oklch(72% 0.19 160);
+  --color-silver-light:     oklch(62% 0.01 160);
+  --color-silver-dark:      oklch(40% 0.01 160);
+  --color-charcoal:         oklch(26% 0.01 160);
+  --color-slate-300:        oklch(75% 0.01 160);
+  --color-slate-400:        oklch(62% 0.01 160);
+  --color-slate-500:        oklch(48% 0.01 160);
+  --color-slate-600:        oklch(36% 0.01 160);
+  --shadow-glow-cobalt:     var(--shadow-glow-emerald);
+  --shadow-glow-mint:       var(--shadow-glow-emerald);
+  --shadow-glow-purple:     var(--shadow-glow-emerald);
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   Reset & base
+   ───────────────────────────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  background: var(--color-abyss);
 }
 
 body {
-  background: var(--color-obsidian);
-  color: var(--color-slate-300);
+  background: var(--color-abyss);
+  color: var(--color-text-mid);
   font-family: var(--font-sans);
+  font-weight: 400;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: oklch(55% 0.20 250 / 0.3);
+  background: oklch(72% 0.19 160 / 0.25);
+  color: oklch(92% 0.01 160);
 }
 
-/* Glassmorphism utility classes */
+/* ─────────────────────────────────────────────────────────────────────
+   Glassmorphism
+   ───────────────────────────────────────────────────────────────────── */
 .glass {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -74,42 +114,48 @@ body {
   border: 1px solid var(--glass-border);
 }
 
-/* Grid texture overlays */
+/* ─────────────────────────────────────────────────────────────────────
+   Grid textures
+   ───────────────────────────────────────────────────────────────────── */
 .grid-texture {
   background-image:
-    linear-gradient(
-      to right,
-      oklch(65% 0.02 250 / 0.05) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      oklch(65% 0.02 250 / 0.05) 1px,
-      transparent 1px
-    );
-  background-size: 48px 48px;
+    linear-gradient(to right,  oklch(72% 0.19 160 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(72% 0.19 160 / 0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 .grid-texture-fine {
   background-image:
-    linear-gradient(
-      to right,
-      oklch(65% 0.02 250 / 0.035) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      oklch(65% 0.02 250 / 0.035) 1px,
-      transparent 1px
-    );
+    linear-gradient(to right,  oklch(72% 0.19 160 / 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(72% 0.19 160 / 0.025) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
-/* Noise texture for depth */
+/* ─────────────────────────────────────────────────────────────────────
+   Dot matrix
+   ───────────────────────────────────────────────────────────────────── */
+.dot-matrix {
+  background-image: radial-gradient(
+    circle,
+    oklch(72% 0.19 160 / 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Glow utilities
+   ───────────────────────────────────────────────────────────────────── */
+.glow-emerald    { box-shadow: var(--shadow-glow-emerald); }
+.glow-emerald-sm { box-shadow: var(--shadow-glow-emerald-sm); }
+.glow-emerald-xs { box-shadow: var(--shadow-glow-emerald-xs); }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Noise texture
+   ───────────────────────────────────────────────────────────────────── */
 .noise-texture {
   position: relative;
 }
-
 .noise-texture::after {
   content: "";
   position: absolute;
@@ -119,32 +165,101 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
-/* Text utilities */
-.text-balance {
-  text-wrap: balance;
+/* ─────────────────────────────────────────────────────────────────────
+   Scan line
+   ───────────────────────────────────────────────────────────────────── */
+@keyframes scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
 
-/* Kinetic typography support */
-.kinetic-text {
-  font-variation-settings: "wght" var(--font-weight, 400);
-  transition: font-variation-settings 0.1s ease-out;
+.scanline {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.scanline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to bottom, transparent, oklch(72% 0.19 160 / 0.025), transparent);
+  animation: scan 10s linear infinite;
 }
 
-/* Container query support */
-@container (min-width: 320px) {
-  .cq-sm\:p-6 {
-    padding: 1.5rem;
-  }
+/* ─────────────────────────────────────────────────────────────────────
+   Text utilities
+   ───────────────────────────────────────────────────────────────────── */
+.text-balance { text-wrap: balance; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Terminal cursor blink
+   ───────────────────────────────────────────────────────────────────── */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink {
+  animation: cursor-blink 1.1s step-end infinite;
 }
 
-@container (min-width: 480px) {
-  .cq-md\:p-8 {
-    padding: 2rem;
-  }
+/* ─────────────────────────────────────────────────────────────────────
+   Emerald line pulse
+   ───────────────────────────────────────────────────────────────────── */
+@keyframes line-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+.line-pulse {
+  animation: line-pulse 2.5s ease-in-out infinite;
 }
 
-@container (min-width: 640px) {
-  .cq-lg\:p-10 {
-    padding: 2.5rem;
-  }
+/* ─────────────────────────────────────────────────────────────────────
+   Diagonal stripe texture (for accent blocks)
+   ───────────────────────────────────────────────────────────────────── */
+.stripe-texture {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 4px,
+    oklch(72% 0.19 160 / 0.03) 4px,
+    oklch(72% 0.19 160 / 0.03) 5px
+  );
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Section label line
+   ───────────────────────────────────────────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.45em;
+  color: oklch(72% 0.19 160);
+  font-family: ui-monospace, monospace;
+}
+.section-label::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: oklch(72% 0.19 160 / 0.6);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Container queries
+   ───────────────────────────────────────────────────────────────────── */
+@container (min-width: 320px) { .cq-sm\:p-6 { padding: 1.5rem; } }
+@container (min-width: 480px) { .cq-md\:p-8 { padding: 2rem; } }
+@container (min-width: 640px) { .cq-lg\:p-10 { padding: 2.5rem; } }
+
+/* ─────────────────────────────────────────────────────────────────────
+   Phosphor icon duotone helper — second layer gets lower opacity
+   ───────────────────────────────────────────────────────────────────── */
+.ph-duotone [data-ph-part="secondary"] { opacity: 0.3; }

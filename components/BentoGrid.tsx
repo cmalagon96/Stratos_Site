@@ -2,187 +2,261 @@
 
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Plane, Dna, Server, ShieldCheck, ArrowUpRight } from "lucide-react";
+import {
+  AirplaneTilt,
+  Dna,
+  CloudArrowUp,
+  ShieldCheckered,
+  ArrowUpRight
+} from "@phosphor-icons/react";
 
-// Bento grid feature data
-const features = [
+const capabilities = [
   {
+    id: "aviation",
     title: "Aviation Systems",
+    tagline: "MRO & Operations",
     description:
-      "MRO coordination platforms, repair order tracking, vendor management systems, and ERP integrations built specifically for aviation parts brokerage and maintenance operations.",
-    icon: Plane,
-    colSpan: "md:col-span-2",
-    accent: "aviation-cobalt",
-    gradientFrom: "from-aviation-cobalt/10",
-    gradientTo: "to-aviation-cobalt/5"
+      "MRO coordination platforms, repair order tracking, vendor management, and ERP integrations for aviation parts brokerage and maintenance operations.",
+    icon: AirplaneTilt,
+    span: "lg:col-span-2 lg:row-span-1",
+    weight: "bold" as const,
+    index: "01"
   },
   {
+    id: "genomics",
     title: "Genomic Sequencing",
+    tagline: "Research Computing",
     description:
-      "High-throughput DNA analysis pipelines, NIH dbGaP compliant data environments, and cloud infrastructure for cancer research studies.",
+      "High-throughput DNA analysis pipelines, NIH dbGaP compliant environments, and cancer research infrastructure at terabyte scale.",
     icon: Dna,
-    colSpan: "md:col-span-1",
-    accent: "dna-purple",
-    gradientFrom: "from-dna-purple/10",
-    gradientTo: "to-dna-purple/5"
+    span: "lg:col-span-1 lg:row-span-2",
+    weight: "bold" as const,
+    index: "02"
   },
   {
+    id: "cloud",
     title: "Cloud Infrastructure",
+    tagline: "AWS Multi-Region",
     description:
-      "Enterprise-grade AWS architecture handling terabyte-scale workloads across 17+ regions with federal compliance standards.",
-    icon: Server,
-    colSpan: "md:col-span-1",
-    accent: "emerald",
-    gradientFrom: "from-emerald/10",
-    gradientTo: "to-emerald/5"
+      "Enterprise-grade AWS architecture across 17+ regions. Federal compliance, terabyte-scale workloads, and zero-downtime deployments.",
+    icon: CloudArrowUp,
+    span: "lg:col-span-1 lg:row-span-1",
+    weight: "bold" as const,
+    index: "03"
   },
   {
+    id: "compliance",
     title: "Security & Compliance",
+    tagline: "NIST / HIPAA / dbGaP",
     description:
-      "NIST SP 800-171 engineering, HIPAA-compliant encrypted vaults, and comprehensive audit remediation with 110+ controls implemented.",
-    icon: ShieldCheck,
-    colSpan: "md:col-span-2",
-    accent: "rose",
-    gradientFrom: "from-rose/10",
-    gradientTo: "to-rose/5"
+      "NIST SP 800-171 engineering, HIPAA-compliant encrypted vaults, and comprehensive audit remediation. 110+ controls implemented.",
+    icon: ShieldCheckered,
+    span: "lg:col-span-2 lg:row-span-1",
+    weight: "bold" as const,
+    index: "04"
   }
 ];
 
-// Individual Bento Card with spotlight effect
-function BentoCard({ feature, index }: { feature: (typeof features)[0]; index: number }) {
+function CapabilityCard({
+  cap,
+  delay
+}: {
+  cap: (typeof capabilities)[0];
+  delay: number;
+}) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
+  const [hovered, setHovered] = useState(false);
+  const Icon = cap.icon;
+
+  // P1-02: Throttle mousemove updates to one per animation frame.
+  // clientX/clientY are captured synchronously before the rAF callback
+  // because React's synthetic events are pooled and may be nullified by
+  // the time the callback fires.
+  const rafId = useRef<number | null>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+    // Capture coordinates before rAF (synthetic event may be reused)
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (rafId.current !== null) return; // already a frame queued — skip
+
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = null;
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      setMouse({
+        x: (clientX - rect.left) / rect.width,
+        y: (clientY - rect.top) / rect.height
+      });
     });
   };
 
-  const Icon = feature.icon;
-
-  // Staggered assembly animation
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 40,
-      scale: 0.95
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 100,
-        damping: 15,
-        delay: index * 0.1
-      }
-    }
-  };
+  // Cancel any pending rAF on unmount to avoid state updates on dead components
+  React.useEffect(() => {
+    return () => {
+      if (rafId.current !== null) cancelAnimationFrame(rafId.current);
+    };
+  }, []);
 
   return (
     <motion.div
       ref={cardRef}
-      variants={cardVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`group relative overflow-hidden rounded-2xl border border-glass-border bg-obsidian-mid ${feature.colSpan}`}
-      style={{ containerType: "inline-size" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className={`group relative overflow-hidden ${cap.span}`}
+      style={{
+        background: "oklch(10% 0.010 160)",
+        border: `1px solid ${hovered ? "oklch(72% 0.19 160 / 0.28)" : "oklch(72% 0.19 160 / 0.07)"}`,
+        transition: "border-color 0.35s ease"
+      }}
+      aria-label={cap.title}
     >
-      {/* Spotlight overlay */}
+      {/* Mouse-tracked spotlight */}
       <div
-        className="pointer-events-none absolute -inset-px z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-400"
         style={{
-          background: isHovered
-            ? `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, oklch(55% 0.20 250 / 0.08), transparent 40%)`
-            : "none"
+          opacity: hovered ? 1 : 0,
+          background: `radial-gradient(
+            380px circle at ${mouse.x * 100}% ${mouse.y * 100}%,
+            oklch(72% 0.19 160 / 0.055) 0%,
+            transparent 70%
+          )`
         }}
       />
 
-      {/* Gradient background */}
+      {/* Left accent bar — reveals on hover */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${feature.gradientFrom} ${feature.gradientTo} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+        className="absolute left-0 top-0 w-[2px] origin-top transition-all duration-500"
+        style={{
+          height: "100%",
+          background: "oklch(72% 0.19 160)",
+          transform: hovered ? "scaleY(1)" : "scaleY(0)",
+          transformOrigin: "top",
+          opacity: 0.7
+        }}
       />
 
       {/* Content */}
-      <div className="relative z-20 flex h-full min-h-[240px] flex-col justify-between p-6 @[320px]:p-8 @[480px]:p-10">
+      <div className="relative z-20 flex h-full min-h-[220px] flex-col justify-between p-7 lg:p-8">
+        {/* Top row */}
         <div className="flex items-start justify-between">
-          {/* Icon */}
-          <div
-            className={`rounded-xl border border-glass-border bg-gradient-to-br ${feature.gradientFrom} ${feature.gradientTo} p-3 backdrop-blur-sm`}
-          >
-            <Icon className={`h-6 w-6 text-${feature.accent}`} />
+          <div className="flex items-center gap-3">
+            {/* Index */}
+            <span
+              className="text-[0.52rem] uppercase tracking-[0.35em] text-[oklch(28%_0.01_160)]"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {cap.index}
+            </span>
+            <div className="h-[1px] w-5 bg-[oklch(72%_0.19_160/0.15)]" />
+            {/* Icon */}
+            <div
+              className="flex h-9 w-9 items-center justify-center border transition-all duration-300"
+              style={{
+                background: hovered ? "oklch(72% 0.19 160 / 0.12)" : "oklch(72% 0.19 160 / 0.06)",
+                borderColor: hovered ? "oklch(72% 0.19 160 / 0.35)" : "oklch(72% 0.19 160 / 0.14)"
+              }}
+            >
+              <Icon
+                weight={cap.weight}
+                size={18}
+                style={{ color: "oklch(72% 0.19 160)" }}
+              />
+            </div>
           </div>
 
-          {/* Arrow */}
-          <ArrowUpRight className="h-5 w-5 text-slate-600 transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-slate-400" />
+          <ArrowUpRight
+            weight="light"
+            size={16}
+            className="transition-all duration-300"
+            style={{
+              color: hovered ? "oklch(72% 0.19 160)" : "oklch(26% 0.01 160)",
+              transform: hovered ? "translate(2px, -2px)" : "translate(0,0)"
+            }}
+          />
         </div>
 
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold text-white @[480px]:text-2xl">
-            {feature.title}
+        {/* Text */}
+        <div className="mt-auto pt-6">
+          <span
+            className="block text-[0.57rem] uppercase tracking-[0.38em] text-[oklch(40%_0.01_160)]"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            {cap.tagline}
+          </span>
+          <h3
+            className="mt-2 text-[1.15rem] uppercase leading-tight tracking-[0.04em] text-white"
+            style={{ fontWeight: 700 }}
+          >
+            {cap.title}
           </h3>
-          <p className="mt-3 text-sm leading-relaxed text-slate-400 @[480px]:text-base">
-            {feature.description}
+          <p className="mt-3 text-[0.82rem] leading-[1.72] text-[oklch(42%_0.01_160)]">
+            {cap.description}
           </p>
         </div>
       </div>
-
-      {/* Noise texture overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.015]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`
-        }}
-      />
     </motion.div>
   );
 }
 
-// Main BentoGrid component
 export default function BentoGrid() {
   return (
-    <section id="services" className="relative bg-obsidian py-24 overflow-hidden">
-      {/* Background ambience */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,oklch(55%_0.20_250_/_0.03)_0%,transparent_50%)]" />
+    <section
+      id="services"
+      className="relative overflow-hidden py-32 scroll-mt-20"
+      style={{ background: "oklch(7% 0.008 160)" }}
+    >
+      {/* Ambient top bloom */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse 55% 35% at 50% 0%, oklch(72% 0.19 160 / 0.04) 0%, transparent 65%)"
+        }}
+      />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-6 md:px-10">
-        {/* Section header */}
+      {/* Grid texture */}
+      <div className="pointer-events-none absolute inset-0 grid-texture opacity-35" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
+
+        {/* Section header — asymmetric layout */}
         <motion.div
-          className="mb-16 max-w-2xl"
-          initial={{ opacity: 0, y: 30 }}
+          className="mb-16 grid gap-8 lg:grid-cols-[1fr_auto]"
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.55 }}
         >
-          <span className="font-mono text-xs uppercase tracking-[0.4em] text-aviation-cobalt">
-            Capabilities
-          </span>
-          <h2 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-            Engineering the{" "}
-            <span className="bg-gradient-to-r from-aviation-cobalt to-dna-purple bg-clip-text text-transparent">
-              Impossible.
-            </span>
-          </h2>
-          <p className="mt-6 text-lg text-slate-400">
-            Converging aerospace engineering, biological computation, and hyper-scale
-            infrastructure.
-          </p>
+          <div>
+            <span className="section-label">Capabilities</span>
+            <h2
+              className="mt-5 text-[2.5rem] uppercase leading-[0.91] tracking-[0.015em] text-white md:text-[3.4rem]"
+              style={{ fontWeight: 900 }}
+            >
+              Engineering the{" "}
+              <span style={{ color: "oklch(72% 0.19 160)" }}>Impossible.</span>
+            </h2>
+          </div>
+          <div className="hidden flex-col justify-end lg:flex">
+            <p className="max-w-xs text-[0.82rem] leading-relaxed text-[oklch(38%_0.01_160)]">
+              Converging aerospace engineering, biological computation, and
+              hyper-scale cloud infrastructure into unified solutions.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {features.map((feature, index) => (
-            <BentoCard key={feature.title} feature={feature} index={index} />
+        {/* Capability grid — asymmetric bento */}
+        <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+          {capabilities.map((cap, i) => (
+            <CapabilityCard key={cap.id} cap={cap} delay={i * 0.07} />
           ))}
         </div>
       </div>
