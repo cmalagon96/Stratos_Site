@@ -1,0 +1,130 @@
+---
+title: API Reference
+description: REST API reference for Stratos Strategies products. Authentication, rate limits, and endpoint documentation.
+---
+
+# API Reference
+
+The Stratos Strategies API uses standard REST conventions with JSON request/response
+bodies and Bearer token authentication.
+
+## Base URL
+
+```
+https://stratosstrat.com/api
+```
+
+## Authentication
+
+All API requests require a Bearer token in the `Authorization` header:
+
+```http
+Authorization: Bearer <your-api-key>
+```
+
+API keys are managed in your account dashboard under **Settings → API Keys**.
+
+## Rate Limits
+
+| Plan | Requests / minute |
+|---|---|
+| Starter | 60 |
+| Pro | 300 |
+| Enterprise | 1 000 |
+
+Rate limit headers are included in every response:
+
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 247
+X-RateLimit-Reset: 1710000060
+```
+
+## Response Format
+
+All responses follow a consistent envelope:
+
+```json
+{
+  "data": { ... },
+  "meta": {
+    "page": 1,
+    "per_page": 25,
+    "total": 142
+  }
+}
+```
+
+Errors use standard HTTP status codes with a descriptive body:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "The 'email' field is required.",
+    "field": "email"
+  }
+}
+```
+
+## Endpoints
+
+### Invoices
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/invoices` | List all invoices (paginated) |
+| `POST` | `/api/invoices` | Create a new invoice |
+| `GET` | `/api/invoices/:id` | Get a single invoice |
+| `PATCH` | `/api/invoices/:id` | Update invoice status |
+| `DELETE` | `/api/invoices/:id` | Void an invoice |
+
+### Customers
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/customers` | List all customers |
+| `POST` | `/api/customers` | Create a customer |
+| `GET` | `/api/customers/:id` | Get customer details |
+| `PATCH` | `/api/customers/:id` | Update customer |
+
+### Products
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/products` | List all products |
+| `GET` | `/api/products/:slug` | Get product by slug |
+
+## Webhooks
+
+Stratos products emit webhooks for key lifecycle events. Configure your endpoint
+URL in **Settings → Webhooks**. All payloads are signed with an HMAC-SHA256
+signature in the `X-Stratos-Signature` header.
+
+### Events
+
+| Event | Description |
+|---|---|
+| `invoice.created` | New invoice created |
+| `invoice.paid` | Payment confirmed via Stripe |
+| `invoice.overdue` | Invoice past due date |
+| `customer.created` | New customer added |
+
+## SDKs
+
+Official SDKs are in development. For now, use the REST API directly or any
+HTTP client. Node.js example:
+
+```typescript
+const response = await fetch("https://stratosstrat.com/api/invoices", {
+  headers: {
+    Authorization: `Bearer ${process.env.STRATOS_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+});
+const { data } = await response.json();
+```
+
+## Support
+
+API questions? Email [api@stratosstrat.com](mailto:api@stratosstrat.com).

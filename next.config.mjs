@@ -1,3 +1,7 @@
+import { createMDX } from "fumadocs-mdx/next";
+
+const withMDX = createMDX();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -9,6 +13,23 @@ const nextConfig = {
 
   // Transpile Three.js packages for SSR compatibility
   transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
+
+  // P0-03: Image optimization — S3 remote patterns + modern formats
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.s3.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
+      },
+    ],
+  },
 
   // Security headers applied to all routes
   async headers() {
@@ -34,4 +55,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

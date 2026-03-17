@@ -4,7 +4,7 @@ import * as rateLimitModule from "@/lib/rate-limit";
 
 // Mock the rate limiter so it never blocks between tests
 vi.mock("@/lib/rate-limit", () => ({
-  rateLimit: vi.fn(() => ({ allowed: true, remaining: 4 })),
+  rateLimit: vi.fn(() => Promise.resolve({ allowed: true, remaining: 4 })),
   getClientIp: vi.fn(() => "127.0.0.1"),
 }));
 
@@ -41,7 +41,7 @@ describe("POST /api/contact", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Restore default allowed behaviour after each test
-    vi.mocked(rateLimitModule.rateLimit).mockReturnValue({ allowed: true, remaining: 4 });
+    vi.mocked(rateLimitModule.rateLimit).mockReturnValue(Promise.resolve({ allowed: true, remaining: 4 }));
     vi.mocked(rateLimitModule.getClientIp).mockReturnValue("127.0.0.1");
   });
 
@@ -114,7 +114,7 @@ describe("POST /api/contact", () => {
   });
 
   it("returns 429 when rate limit is exceeded", async () => {
-    vi.mocked(rateLimitModule.rateLimit).mockReturnValue({ allowed: false, remaining: 0, retryAfterSeconds: 900 });
+    vi.mocked(rateLimitModule.rateLimit).mockReturnValue(Promise.resolve({ allowed: false, remaining: 0, retryAfterSeconds: 900 }));
 
     const req = makeRequest({
       name: "Jane",

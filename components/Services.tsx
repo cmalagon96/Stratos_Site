@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   CloudArrowUp,
   ShieldCheckered,
@@ -41,7 +41,7 @@ export default function Services() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
 
         {/* Header */}
-        <motion.div
+        <m.div
           className="mb-16 grid gap-8 lg:grid-cols-[1fr_auto]"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -74,7 +74,7 @@ export default function Services() {
               <ArrowRight weight="light" size={14} className="text-emerald transition-transform duration-300 group-hover:translate-x-1" />
             </a>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Service list — accordion-style */}
         <div
@@ -86,7 +86,7 @@ export default function Services() {
             const isActive = activeId === service.id;
 
             return (
-              <motion.div
+              <m.div
                 key={service.id}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export default function Services() {
                 {/* P1-06: Panel region associated with its heading button */}
                 <AnimatePresence>
                   {isActive && (
-                    <motion.div
+                    <m.div
                       id={`service-panel-${service.id}`}
                       role="region"
                       aria-labelledby={`service-btn-${service.id}`}
@@ -195,10 +195,10 @@ export default function Services() {
                           />
                         </a>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </m.div>
             );
           })}
         </div>

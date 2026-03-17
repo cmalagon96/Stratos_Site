@@ -74,3 +74,11 @@ export const navLinks = [
   { id: "industries", label: "Industries" },
   { id: "contact", label: "Contact" }
 ];
+
+// Top-level page routes used by the Navbar on non-home pages
+export const pageNavLinks = [
+  { href: "/",         label: "Home" },
+  { href: "/products", label: "Products" },
+  { href: "/pricing",  label: "Pricing" },
+  { href: "/about",    label: "About" },
+];

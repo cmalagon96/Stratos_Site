@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { m, useInView } from "framer-motion";
 import { useRef } from "react";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { stats } from "@/lib/constants";
@@ -51,7 +51,7 @@ export default function About() {
         <div className="grid gap-16 lg:grid-cols-[1fr_1fr] lg:gap-24">
 
           {/* Left column — sticky heading */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -101,12 +101,12 @@ export default function About() {
               controlled-access genomic data to aviation parts brokerages
               modernizing decades-old workflows.
             </p>
-          </motion.div>
+          </m.div>
 
           {/* Right column — approach points */}
           <div className="flex flex-col gap-0">
             {APPROACH_POINTS.map((point, i) => (
-              <motion.div
+              <m.div
                 key={point.index}
                 initial={{ opacity: 0, x: 24 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -143,13 +143,13 @@ export default function About() {
                   className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-emerald transition-transform duration-400 group-hover:scale-y-100"
                   style={{ opacity: 0.6 }}
                 />
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>
 
         {/* Stats bar — full-width, horizontal */}
-        <motion.div
+        <m.div
           className="mt-20"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ export default function About() {
 
           <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
             {stats.map((stat, index) => (
-              <motion.div
+              <m.div
                 key={stat.id}
                 className="group relative overflow-hidden border border-[oklch(72%_0.19_160/0.08)] bg-[oklch(13%_0.010_160)] p-7 transition-all duration-300 hover:border-[oklch(72%_0.19_160/0.22)]"
                 initial={{ opacity: 0, y: 16 }}
@@ -210,10 +210,10 @@ export default function About() {
                     {stat.label}
                   </span>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

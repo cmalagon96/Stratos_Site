@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { industries } from "@/lib/constants";
 import { Dna, AirplaneTilt, ArrowRight, type Icon as PhosphorIcon } from "@phosphor-icons/react";
 
@@ -47,7 +47,7 @@ export default function Industries() {
     >
       {/* Section header */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 pt-32 md:px-12">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -62,7 +62,7 @@ export default function Industries() {
             Deep expertise where{" "}
             <span style={{ color: "oklch(72% 0.19 160)" }}>precision matters.</span>
           </h2>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Industry panels */}
@@ -73,7 +73,7 @@ export default function Industries() {
           const isEven = industryIndex % 2 === 0;
 
           return (
-            <motion.div
+            <m.div
               key={industry.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +123,7 @@ export default function Industries() {
                   {/* Bullet list */}
                   <ul className="flex flex-col gap-2.5">
                     {bullets.map((bullet, bi) => (
-                      <motion.li
+                      <m.li
                         key={bi}
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -141,7 +141,7 @@ export default function Industries() {
                         >
                           {bullet}
                         </span>
-                      </motion.li>
+                      </m.li>
                     ))}
                   </ul>
 
@@ -208,7 +208,7 @@ export default function Industries() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           );
         })}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { EnvelopeSimple, MapPin, Buildings, PaperPlaneTilt, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { contactSchema } from "@/lib/schemas/contact";
 import type { ZodError } from "zod";
@@ -113,7 +113,7 @@ export default function Contact() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
 
         {/* Header */}
-        <motion.div
+        <m.div
           className="mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -131,12 +131,12 @@ export default function Contact() {
           <p className="mt-5 max-w-lg text-[0.9rem] leading-relaxed text-[oklch(38%_0.01_160)]">
             All inquiries are handled directly by our principals. Average response time: 24 hours.
           </p>
-        </motion.div>
+        </m.div>
 
         <div className="grid gap-12 lg:grid-cols-[1fr_340px]">
 
           {/* Form */}
-          <motion.form
+          <m.form
             onSubmit={handleSubmit}
             className="flex flex-col gap-6"
             initial={{ opacity: 0, y: 20 }}
@@ -280,7 +280,7 @@ export default function Contact() {
 
             {/* Status messages */}
             {status === "success" && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3"
@@ -292,10 +292,10 @@ export default function Contact() {
                 >
                   Message received. We will respond shortly.
                 </span>
-              </motion.div>
+              </m.div>
             )}
             {status === "error" && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3"
@@ -307,12 +307,12 @@ export default function Contact() {
                 >
                   Transmission failed. Please try again.
                 </span>
-              </motion.div>
+              </m.div>
             )}
-          </motion.form>
+          </m.form>
 
           {/* Contact sidebar */}
-          <motion.div
+          <m.div
             className="flex flex-col gap-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -387,7 +387,7 @@ export default function Contact() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>

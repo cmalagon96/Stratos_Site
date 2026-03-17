@@ -1,43 +1,46 @@
 /**
- * In-memory rate limiter for API routes.
- * Key by IP address, sliding window approach.
+ * P0-04: Upstash Redis rate limiter for API routes.
  *
- * NOTE: This is per-instance — in a Lambda@Edge deployment each cold start
- * gets its own Map. Acceptable for a contact form; not suitable for
- * high-traffic APIs where you'd want Redis/DynamoDB.
+ * Replaces the previous in-memory Map implementation that reset on every
+ * Lambda cold start. Uses @upstash/ratelimit with a sliding window algorithm
+ * backed by Upstash Redis — works correctly across Lambda instances and
+ * cold starts.
+ *
+ * Requires environment variables:
+ *   UPSTASH_REDIS_REST_URL   — Upstash Redis REST endpoint
+ *   UPSTASH_REDIS_REST_TOKEN — Upstash Redis REST auth token
  */
 
-interface RateLimitEntry {
-  timestamps: number[];
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+/**
+ * Create the Upstash Redis client. Falls back gracefully if env vars are
+ * missing (development without Redis) — rateLimit() will allow all requests.
+ */
+function createRedisClient(): Redis | null {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  return new Redis({ url, token });
 }
 
-const store = new Map<string, RateLimitEntry>();
+const redis = createRedisClient();
 
-// Clean up stale entries every 10 minutes to prevent memory leak
-const CLEANUP_INTERVAL_MS = 10 * 60 * 1000;
-let lastCleanup = Date.now();
+/**
+ * Sliding-window rate limiter: 5 requests per 15-minute window.
+ * Declared at module scope so the instance is reused across warm invocations.
+ */
+const rateLimiter = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(5, "15 m"),
+      analytics: false,
+      prefix: "stratos:ratelimit",
+    })
+  : null;
 
-function cleanup(windowMs: number) {
-  const now = Date.now();
-  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
-  lastCleanup = now;
-
-  store.forEach((entry, key) => {
-    entry.timestamps = entry.timestamps.filter((t) => now - t < windowMs);
-    if (entry.timestamps.length === 0) {
-      store.delete(key);
-    }
-  });
-}
-
-interface RateLimitConfig {
-  /** Maximum number of requests allowed in the window */
-  maxRequests: number;
-  /** Window size in milliseconds */
-  windowMs: number;
-}
-
-interface RateLimitResult {
+export interface RateLimitResult {
   allowed: boolean;
   /** Seconds until the client can retry (only set when blocked) */
   retryAfterSeconds?: number;
@@ -45,27 +48,23 @@ interface RateLimitResult {
   remaining: number;
 }
 
-export function rateLimit(
-  ip: string,
-  config: RateLimitConfig = { maxRequests: 5, windowMs: 15 * 60 * 1000 },
-): RateLimitResult {
-  const { maxRequests, windowMs } = config;
-  const now = Date.now();
-
-  cleanup(windowMs);
-
-  let entry = store.get(ip);
-  if (!entry) {
-    entry = { timestamps: [] };
-    store.set(ip, entry);
+/**
+ * Check rate limit for a given identifier (typically client IP).
+ *
+ * When Upstash is not configured (missing env vars), all requests are allowed
+ * so local development is not blocked.
+ */
+export async function rateLimit(identifier: string): Promise<RateLimitResult> {
+  if (!rateLimiter) {
+    // Upstash not configured — allow everything (dev fallback)
+    console.warn("[rate-limit] Upstash not configured — allowing all requests");
+    return { allowed: true, remaining: 999 };
   }
 
-  // Remove timestamps outside the window
-  entry.timestamps = entry.timestamps.filter((t) => now - t < windowMs);
+  const { success, remaining, reset } = await rateLimiter.limit(identifier);
 
-  if (entry.timestamps.length >= maxRequests) {
-    const oldestInWindow = entry.timestamps[0];
-    const retryAfterMs = windowMs - (now - oldestInWindow);
+  if (!success) {
+    const retryAfterMs = Math.max(0, reset - Date.now());
     return {
       allowed: false,
       retryAfterSeconds: Math.ceil(retryAfterMs / 1000),
@@ -73,30 +72,34 @@ export function rateLimit(
     };
   }
 
-  entry.timestamps.push(now);
   return {
     allowed: true,
-    remaining: maxRequests - entry.timestamps.length,
+    remaining,
   };
 }
 
 /**
  * Extract client IP from request headers.
- * Checks CloudFront / Cloudflare / generic proxy headers.
+ * Checks CloudFront viewer address (not spoofable), then falls back
+ * to the rightmost x-forwarded-for entry, then Cloudflare headers.
  */
 export function getClientIp(request: Request): string {
   const headers = new Headers(request.headers);
 
-  // CloudFront (SST deploys behind CloudFront)
-  const cfIp = headers.get('x-forwarded-for');
-  if (cfIp) {
-    // x-forwarded-for can be comma-separated; leftmost is the client
-    return cfIp.split(',')[0].trim();
+  // CloudFront injects the real viewer IP in this header (cannot be spoofed)
+  const viewerAddr = headers.get("cloudfront-viewer-address");
+  if (viewerAddr) return viewerAddr.split(":")[0];
+
+  // Fallback: rightmost x-forwarded-for entry (last proxy-appended value)
+  const forwarded = headers.get("x-forwarded-for");
+  if (forwarded) {
+    const ips = forwarded.split(",").map((s) => s.trim());
+    return ips[ips.length - 1];
   }
 
   // Cloudflare
-  const cfConnecting = headers.get('cf-connecting-ip');
+  const cfConnecting = headers.get("cf-connecting-ip");
   if (cfConnecting) return cfConnecting;
 
-  return '127.0.0.1';
+  return "127.0.0.1";
 }

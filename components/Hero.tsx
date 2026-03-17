@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 // P0-06: Named import instead of `import * as THREE` for tree-shaking.
@@ -11,6 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AdditiveBlending } from "three";
 import type { Points as ThreePoints } from "three";
 import useIsomorphicLayoutEffect from "@/lib/hooks/useIsomorphicLayoutEffect";
+import usePrefersReducedMotion from "@/lib/hooks/usePrefersReducedMotion";
 
 // P2-05: registerPlugin is side-effectful; running it at module scope fires on
 // every SSR render even though ScrollTrigger is browser-only. Moved inside
@@ -153,6 +154,25 @@ function AmbientField() {
   );
 }
 
+// ─── P0-05: Static fallback for prefers-reduced-motion users ─────────
+// No Three.js canvas, no particle animation — saves ~300KB bundle.
+function ReducedMotionFallback() {
+  return (
+    <div className="absolute inset-0 z-0">
+      {/* Subtle radial gradient mimicking the particle glow */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 50% at 50% 48%, oklch(20% 0.06 160 / 0.35) 0%, transparent 70%)",
+        }}
+      />
+      {/* Static dot grid accent */}
+      <div className="pointer-events-none absolute inset-0 dot-matrix opacity-10" />
+    </div>
+  );
+}
+
 // ─── Terminal credential readout ─────────────────────────────────────
 const CREDENTIALS = [
   { code: "SYS-001", label: "17+ AWS Regions" },
@@ -167,6 +187,9 @@ export default function Hero() {
   const [morphProgress, setMorphProgress] = useState(0);
   const [fontWeight, setFontWeight] = useState(800);
 
+  // P0-05: Check user motion preference
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   // P2-05: registerPlugin moved into useEffect — browser-only, never runs SSR.
   // P1-04: useIsomorphicLayoutEffect resolves the SSR useLayoutEffect warning.
   useEffect(() => {
@@ -174,6 +197,9 @@ export default function Hero() {
   }, []);
 
   useIsomorphicLayoutEffect(() => {
+    // P0-05: Skip scroll-driven animations when user prefers reduced motion
+    if (prefersReducedMotion) return;
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: containerRef.current,
@@ -191,7 +217,7 @@ export default function Hero() {
       });
     }, containerRef);
     return () => ctx.revert();
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section
@@ -200,14 +226,22 @@ export default function Hero() {
       className="relative h-screen w-full overflow-hidden"
       style={{ background: "oklch(4% 0.005 160)" }}
     >
-      {/* 3D canvas */}
-      <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 2.9], fov: 56 }}>
-          <ambientLight intensity={0.25} />
-          <ParticleVortex morphProgress={morphProgress} />
-          <AmbientField />
-        </Canvas>
-      </div>
+      {/* P0-05: Conditionally render 3D canvas or static fallback */}
+      {prefersReducedMotion ? (
+        <ReducedMotionFallback />
+      ) : (
+        <div className="absolute inset-0 z-0">
+          {/* P0-06: dpr={[1, 1.5]} caps pixel ratio — 25-35% less GPU on mobile */}
+          <Canvas
+            camera={{ position: [0, 0, 2.9], fov: 56 }}
+            dpr={[1, 1.5]}
+          >
+            <ambientLight intensity={0.25} />
+            <ParticleVortex morphProgress={morphProgress} />
+            <AmbientField />
+          </Canvas>
+        </div>
+      )}
 
       {/* Deep vignette — darker edges, brighter centre */}
       <div
@@ -231,7 +265,7 @@ export default function Hero() {
         <div className="mx-auto w-full max-w-7xl">
 
           {/* Status row */}
-          <motion.div
+          <m.div
             className="mb-10 flex items-center gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -264,10 +298,10 @@ export default function Hero() {
                 </span>
               ))}
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Main headline — massive, left-aligned */}
-          <motion.h1
+          <m.h1
             className="max-w-5xl"
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
@@ -306,11 +340,11 @@ export default function Hero() {
             >
               of Life & Flight
             </span>
-          </motion.h1>
+          </m.h1>
 
           {/* Sub-headline + CTA — two-column on desktop */}
           <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <motion.div
+            <m.div
               className="max-w-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -348,10 +382,10 @@ export default function Hero() {
                   </span>
                 </a>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Terminal credential readout */}
-            <motion.div
+            <m.div
               className="hidden lg:block"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -371,7 +405,7 @@ export default function Hero() {
                   <span className="h-[1px] flex-1 bg-[oklch(72%_0.19_160/0.08)]" />
                 </div>
                 {CREDENTIALS.map((cred, i) => (
-                  <motion.div
+                  <m.div
                     key={cred.code}
                     className="flex items-center gap-3 py-1.5"
                     initial={{ opacity: 0, x: 8 }}
@@ -391,7 +425,7 @@ export default function Hero() {
                     >
                       {cred.label}
                     </span>
-                  </motion.div>
+                  </m.div>
                 ))}
                 {/* Blinking cursor */}
                 <div className="mt-2 flex items-center gap-1.5">
@@ -406,7 +440,7 @@ export default function Hero() {
                   />
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>
@@ -418,14 +452,14 @@ export default function Hero() {
       />
 
       {/* Scroll indicator */}
-      <motion.div
+      <m.div
         className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 0.8 }}
       >
         <div className="flex flex-col items-center gap-3">
-          <motion.div
+          <m.div
             className="h-10 w-[1px]"
             style={{ background: "linear-gradient(to bottom, transparent, oklch(72% 0.19 160 / 0.5), transparent)" }}
             animate={{ scaleY: [1, 0.3, 1] }}
@@ -438,7 +472,7 @@ export default function Hero() {
             Scroll
           </span>
         </div>
-      </motion.div>
+      </m.div>
     </section>
   );
 }

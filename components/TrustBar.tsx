@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   Cloud,
   ShieldCheck,
@@ -60,7 +60,7 @@ export default function TrustBar() {
       <div className="mx-auto max-w-7xl px-6 py-6 md:px-12">
         <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
           {TRUST_ITEMS.map((item, i) => (
-            <motion.div
+            <m.div
               key={item.label}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export default function TrustBar() {
                   {item.sublabel}
                 </span>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

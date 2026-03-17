@@ -10,6 +10,15 @@ vi.mock("next/image", () => ({
   )
 }));
 
+// next/navigation is not initialised in the vitest/jsdom environment.
+// Return "/" so the Navbar treats every render as the home page (hash-link mode),
+// which matches the href assertions already written in the test suite.
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 vi.mock("framer-motion", async () => {
   const actual = await vi.importActual<typeof import("framer-motion")>("framer-motion");
   return {
@@ -91,9 +100,9 @@ describe("Navbar", () => {
     expect(screen.getByRole("navigation")).toBeInTheDocument();
   });
 
-  it("logo link points to #top", () => {
+  it("logo link points to home", () => {
     render(<Navbar />);
     const logoLink = screen.getByRole("link", { name: /stratos strategies home/i });
-    expect(logoLink).toHaveAttribute("href", "#top");
+    expect(logoLink).toHaveAttribute("href", "/");
   });
 });

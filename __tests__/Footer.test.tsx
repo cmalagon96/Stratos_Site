@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Footer from "@/components/Footer";
-import { navLinks } from "@/lib/constants";
 
 vi.mock("next/image", () => ({
   default: ({ src, alt }: { src: string; alt: string }) => (
@@ -28,7 +27,6 @@ describe("Footer", () => {
 
   it("renders the location 'Doral, FL'", () => {
     render(<Footer />);
-    // Multiple elements may have Doral FL text
     const els = screen.getAllByText(/doral, fl/i);
     expect(els.length).toBeGreaterThanOrEqual(1);
   });
@@ -39,19 +37,22 @@ describe("Footer", () => {
     expect(logos.length).toBeGreaterThanOrEqual(1);
   });
 
-  it("renders all nav links in the footer navigation list", () => {
+  it("renders Products section with product links", () => {
     render(<Footer />);
-    navLinks.forEach((link) => {
-      expect(screen.getByText(link.label)).toBeInTheDocument();
-    });
+    expect(screen.getByText("Products")).toBeInTheDocument();
+    expect(screen.getByText("BillFlow")).toBeInTheDocument();
+    expect(screen.getByText("RosaBio")).toBeInTheDocument();
+    expect(screen.getByText("GenThrust")).toBeInTheDocument();
+    expect(screen.getByText("All Products")).toBeInTheDocument();
   });
 
-  it("footer nav links have correct href attributes", () => {
+  it("renders Company section with company links", () => {
     render(<Footer />);
-    navLinks.forEach((link) => {
-      const anchor = screen.getByRole("link", { name: link.label });
-      expect(anchor).toHaveAttribute("href", `#${link.id}`);
-    });
+    expect(screen.getByText("Company")).toBeInTheDocument();
+    expect(screen.getByText("About")).toBeInTheDocument();
+    expect(screen.getByText("Contact")).toBeInTheDocument();
+    expect(screen.getByText("Pricing")).toBeInTheDocument();
+    expect(screen.getByText("Documentation")).toBeInTheDocument();
   });
 
   it("renders the LinkedIn social link", () => {
@@ -77,11 +78,6 @@ describe("Footer", () => {
   it("renders 'Platforms & Standards' section heading", () => {
     render(<Footer />);
     expect(screen.getByText(/platforms & standards/i)).toBeInTheDocument();
-  });
-
-  it("renders 'Navigation' section heading", () => {
-    render(<Footer />);
-    expect(screen.getByText(/^navigation$/i)).toBeInTheDocument();
   });
 
   it("home logo link points to #top", () => {

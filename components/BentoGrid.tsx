@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   AirplaneTilt,
   Dna,
@@ -102,7 +102,7 @@ function CapabilityCard({
   }, []);
 
   return (
-    <motion.div
+    <m.div
       ref={cardRef}
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -203,7 +203,7 @@ function CapabilityCard({
           </p>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -228,7 +228,7 @@ export default function BentoGrid() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12">
 
         {/* Section header — asymmetric layout */}
-        <motion.div
+        <m.div
           className="mb-16 grid gap-8 lg:grid-cols-[1fr_auto]"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -251,7 +251,7 @@ export default function BentoGrid() {
               hyper-scale cloud infrastructure into unified solutions.
             </p>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Capability grid — asymmetric bento */}
         <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">

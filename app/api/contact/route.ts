@@ -10,9 +10,9 @@ const CONTACT_EMAIL_TO = process.env.CONTACT_EMAIL_TO ?? "";
 
 export async function POST(request: Request) {
   try {
-    // --- Rate limiting ---
+    // --- Rate limiting (P0-04: now backed by Upstash Redis) ---
     const ip = getClientIp(request);
-    const limit = rateLimit(ip);
+    const limit = await rateLimit(ip);
 
     if (!limit.allowed) {
       return NextResponse.json(
@@ -83,17 +83,14 @@ export async function POST(request: Request) {
           }),
         );
       } catch (sesError) {
-        // SES failed — log the validated submission so it is not lost,
-        // then return a 500 to the client
+        // P0-02: SES failed — log only non-PII metadata to CloudWatch.
+        // The full submission is lost, but we avoid storing PII in logs.
         console.error("[contact] SES send failed:", sesError);
-        console.log("[contact] Validated submission (SES fallback):", {
-          name,
-          email,
-          company,
+        console.log("[contact] SES fallback — submission received but undelivered:", {
           projectType,
-          message,
+          hasCompany: !!company,
           timestamp: new Date().toISOString(),
-          ip,
+          // PII (name, email, IP, message) intentionally excluded from logs
         });
 
         return NextResponse.json(
@@ -109,15 +106,11 @@ export async function POST(request: Request) {
         );
       }
     } else {
-      // SES not configured — development fallback: log the validated submission
-      console.log("[contact] SES not configured — logging submission:", {
-        name,
-        email,
-        company,
+      // SES not configured — development fallback
+      console.log("[contact] SES not configured — submission received:", {
         projectType,
-        message,
+        hasCompany: !!company,
         timestamp: new Date().toISOString(),
-        ip,
       });
     }
 

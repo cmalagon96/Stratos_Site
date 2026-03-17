@@ -1,0 +1,62 @@
+---
+title: BillFlow
+description: Multi-tenant SaaS billing and invoice management platform. Generate PDFs, manage customers, and process payments via Stripe.
+---
+
+# BillFlow
+
+BillFlow is a multi-tenant billing and invoice management platform built for
+businesses that need professional invoicing without the bloat of enterprise ERP systems.
+
+## Features
+
+- **Multi-tenant**: Each organisation gets its own isolated data workspace
+- **PDF generation**: Pixel-perfect invoice PDFs via server-side rendering
+- **Stripe integration**: Subscriptions, one-time payments, and webhook handling
+- **Customer management**: Full CRUD for customers, products, and tax rates
+- **Search**: Full-text search across invoices, customers, and line items
+- **Backups**: Scheduled S3 backup with point-in-time restore
+
+## Getting Started
+
+### 1. Create an Account
+
+Visit [BillFlow](https://stratosstrat.com/products) and click **Get Started**.
+You'll be guided through an onboarding wizard to set up your organisation.
+
+### 2. Configure Your Business
+
+After account creation, navigate to **Settings** and fill in:
+
+- Business name and address
+- Tax ID / VAT number (optional)
+- Default currency and payment terms
+- Logo upload for PDF invoices
+
+### 3. Add Your First Customer
+
+Go to **Customers → New Customer** and enter:
+
+- Contact name and email
+- Billing address
+- Payment method (Stripe card on file)
+
+### 4. Create an Invoice
+
+Navigate to **Invoices → New Invoice**, select a customer, add line items,
+and click **Send**. The customer receives an email with a PDF attachment and
+a Stripe payment link.
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `STRIPE_SECRET_KEY` | Stripe secret key for payment processing |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret for event verification |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `AWS_S3_BUCKET` | S3 bucket for PDF storage and backups |
+
+## Support
+
+Contact [support@stratosstrat.com](mailto:support@stratosstrat.com) or use the
+in-app chat widget.
